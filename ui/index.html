@@ -1,0 +1,20 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% block content %}
+Links to other pages:
+
+<a href="/shop">Shop</a>
+<a href="/showAllShops">Show All Shops</a>
+<a href="/showAllPlayers">Show All Players</a>
+<a href="/showAllItems">Show All Items</a>
+<a href="/showAllOrders">Show All Orders</a>
+<a href="/shop/add">Add New Shop</a>
+<a href="/item/add">Add New Item</a>
+<a href="/item/search">Search Item</a>
+
+<div class="row">
+    <div class="col col-md-3 offset-md-6">
+        <input type="button" class="h1 mt-0 float-right text-center"
+               value="➕ Add New Entry" onclick="location.href='/player'"/>
+    </div>
+{%- endblock %}
