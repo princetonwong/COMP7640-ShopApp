@@ -46,23 +46,35 @@ def addShop():
     return render_template("addShop.html")
 
 
-#TODO: Item management - Show all items of a shop
-@app.route("/item/all/<int:shop_id>")
+# Item management - Show all items of a shop
+@app.route("/item/all/<shop_id>")
 def showAllItems(shop_id):
-    data = db.execute(f"SELECT * FROM `Item` WHERE `shopId` = {shop_id}")
-    items = [Item(*row) for row in data]
-    return render_template("showAllItems.html", items=items)
+    shopData = db.execute(f"SELECT * FROM `Shop` WHERE `shopId` = '{shop_id}'")
+    shop = Shop(*shopData[0])
+
+    itemsData = db.execute(f"SELECT * FROM Item WHERE itemId in (SELECT itemId FROM `ShopItem` WHERE `shopId` = '{shop_id}')")
+    items = [Item(*row) for row in itemsData]
+
+    return render_template("showAllItems.html", items=items, shop=shop)
 
 
-#TODO: Item management - Add a new item to the shop.
-@app.route("/item/add/<int:shop_id>", methods=["GET", "POST"])
-def addItem(shop_id):
+# Item management - Add a new item to the shop
+@app.route("/item/add/<shopId>", methods=["GET", "POST"])
+def addItem(shopId):
     if request.method == "POST":
-        name = request.form.get("name")
-        price = request.form.get("price")
-        db.execute(f"INSERT INTO `Item` (`name`, `price`, `shopId`) VALUES ('{name}', '{price}', '{shop_id}');")
-        return redirect(url_for("index"))
-    return render_template("addItem.html")
+        itemName = request.form.get("itemName")
+        price = float(request.form.get("price"))
+        keyword1 = request.form.get("keyword1")
+        keyword2 = request.form.get("keyword2")
+        keyword3 = request.form.get("keyword3")
+        itemId = uuid4()
+        db.execute(f"INSERT INTO `Item` (itemId, name, price, keyword1, keyword2, keyword3) VALUES('{itemId}', '{itemName}', {price}, '{keyword1}', '{keyword2}','{keyword3}');")
+        db.execute(f"INSERT INTO `ShopItem` (shopId, itemId) VALUES ('{shopId}', '{itemId}');")
+        return redirect(f"/item/all/{shopId}")
+
+    shopData = db.execute(f"SELECT * FROM `Shop` WHERE `shopId` = '{shopId}'")
+    shop = Shop(*shopData[0])
+    return render_template("addItem.html", shop=shop)
 
 #TODO: Item search - You can search items by keywords. (A keyword --> name or keyword fully matches)
 @app.route("/item/search", methods=["GET", "POST"])

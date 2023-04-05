@@ -1,0 +1,41 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% block content %}
+
+
+<div class="row mt-4">
+    <div class="col alert alert-primary bg-danger text-white text-center">
+        <span class="h1">All Items of {{shop.name}}</span>
+    </div>
+</div>
+
+<div class="container margin">
+    <div class="row">
+    <div class="col">
+        <div class="row alert alert-warning bg-dark text-white">
+            <span class="col col-4 mt-0 h3 text-center">Item Name</span>
+            <span class="col col-2 mt-0 h3 border-left border-light text-center">Price</span>
+            <span class="col col-4 mt-0 h3 border-left border-light text-center">Keywords</span>
+        </div>
+        {% for item in items %}
+        <div class="row alert alert-warning">
+            <input type="hidden" value={{ item.itemId }}>
+            <span class="col col-4 mt-0 h3 text-left">{{ item.name }}</span>
+            <span class="col col-2 mt-0 border-left border-dark h3 text-center">{{ item.price }}</span>
+            <span class="col col-4 mt-0 border-left border-dark h3 text-left">{{ item.keyword1 }}, {{item.keyword2}}, {{item.keyword3}}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col col-md-3 offset-md-6">
+        <input type="button" class="h3 mt-0 float-right text-center"
+               value="➕ Add new item to this shop" onclick="location.href='/item/add/{{shop.shopId}}'"/>
+    </div>
+</div>
+{%- endblock %}

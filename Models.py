@@ -38,3 +38,8 @@ class OrderItem:
     orderId: str
     itemId: str
     quantity: int
+
+@dataclass
+class ShopItem:
+    shopId: str
+    itemId: str

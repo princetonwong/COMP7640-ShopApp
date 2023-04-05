@@ -20,7 +20,7 @@
         {% for shop in shops %}
         <div class="row alert alert-warning">
             <input type="hidden" value={{ shop.shopId }}>
-            <span class="col col-4 mt-0 h3 text-left">{{ shop.name }}</span>
+            <span class="col col-4 mt-0 h3 text-left"><a href="/item/all/{{ shop.shopId }}">{{ shop.name }}</a></span>
             <span class="col col-2 mt-0 border-left border-dark h3 text-center">{{ shop.rating }}</span>
             <span class="col col-4 mt-0 border-left border-dark h3 text-left">{{ shop.location }}</span>
         </div>

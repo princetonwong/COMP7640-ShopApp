@@ -3,7 +3,7 @@ USE SHOPAPP;
 DROP TABLE IF EXISTS Shop;
 
 create table IF NOT EXISTS Shop (
-	shopId VARCHAR(255),
+	shopId VARCHAR(40),
 	name VARCHAR(255),
 	rating DECIMAL(2,1),
 	location VARCHAR(255),
@@ -79,7 +79,7 @@ insert into Item (itemId, name, price, keyword1, keyword2, keyword3)
 values ('431c7779-4cd6-44f6-ae1c-da80a13fe633', 'GLYCERIN', 131.7, 'Yellow', 'Quamba', 'Grocery'),
 ('a5ac0e45-faf5-4e3d-9ad2-111c8dffe9ef', 'Titanium Dioxide, OCTINOXATE, Zinc Oxide, OCTISALATE', 157.8, 'Purple', 'Babblestorm', 'Toys'),
 ('88600d90-61b7-4552-a12e-c654cc5f2a52', 'TRAMADOL HYDROCHLORIDE', 194.0, 'Puce', 'Yotz', 'Sports'),
-('7d49c255-b254-4734-9298-4c38c6c475c2', 'MAGNESIUM ASCORBYL PHOSPHATE', -1.0, 'Mauv', 'LiveZ', 'Baby'),
+('7d49c255-b254-4734-9298-4c38c6c475c2', 'MAGNESIUM ASCORBYL PHOSPHATE', 1.0, 'Mauv', 'LiveZ', 'Baby'),
 ('9a94f2ed-d798-44fc-ac0a-f9b69b3d582d', 'Dimethicone', 140.7, 'Orange', 'Wikizz', 'Home'),
 ('5c1d9b0f-b237-47ea-b0a7-a528790283a6', 'PETROLATUM', 156.0, 'Pink', 'Roomm', 'Baby'),
 ('9f77f7e7-7717-4e01-aaf0-f2e5b8573f9d', 'mesalamine', 90.1, 'Puce', 'Yakidoo', 'Beauty'),
@@ -98,7 +98,7 @@ values ('431c7779-4cd6-44f6-ae1c-da80a13fe633', 'GLYCERIN', 131.7, 'Yellow', 'Qu
 ('158e0b67-9130-482e-83eb-16084ca29fba', 'rOPINIRole', 96.8, 'Green', 'Quinu', 'Health'),
 ('8a6955d4-f153-40a0-b7c6-1fcac1f342ca', 'Guaifenesin', 74.1, 'Green', 'Eadel', 'Computers'),
 ('c0df5d19-27f3-4421-a87e-9d181a32d354', 'WITCH HAZEL', 189.1, 'Teal', 'Aivee', 'Home'),
-('9d330a05-7a0e-42a0-b40a-f4836ee17cec', 'SULFUR, RESORCINOL', -1.9, 'Blue', 'Devpoint', 'Grocery'),
+('9d330a05-7a0e-42a0-b40a-f4836ee17cec', 'SULFUR, RESORCINOL', 1.9, 'Blue', 'Devpoint', 'Grocery'),
 ('4cc032fd-1879-4db6-8197-52b58ce7084a', 'Anticoagulant Citrate Phosphate Dextrose (CPD)', 151.5, 'Orange', 'Yodel', 'Beauty'),
 ('dcfc8e22-aed8-40d8-bb54-bfca1bfc0466', 'Buprenorphine and Naloxone', 184.8, 'Pink', 'Camimbo', 'Industrial'),
 ('3a7baa49-e0e7-4c81-b136-77776835cc2e', 'Trihexyphenidyl Hydrochloride', 147.3, 'Orange', 'Buzzster', 'Garden'),
@@ -109,7 +109,7 @@ values ('431c7779-4cd6-44f6-ae1c-da80a13fe633', 'GLYCERIN', 131.7, 'Yellow', 'Qu
 ('1a1da05a-46cb-4baa-9648-d1421e93f08a', 'AMLODIPINE BESYLATE', 183.6, 'Goldenrod', 'Skiba', 'Baby'),
 ('a141a179-3c5a-4c51-8161-d1f39350c3a0', 'Benzocaine, Benzethonium Chloride', 48.1, 'Teal', 'Brightbean', 'Toys'),
 ('79bb8750-bd0b-4ec5-835c-07b6ad3aaf10', 'CEFPROZIL', 140.6, 'Indigo', 'Trilia', 'Games'),
-('09ca6a8e-842d-4b4a-b710-279396e56a70', 'Isopropyl Alcohol', -4.4, 'Mauv', 'Lazzy', 'Toys'),
+('09ca6a8e-842d-4b4a-b710-279396e56a70', 'Isopropyl Alcohol', 4.4, 'Mauv', 'Lazzy', 'Toys'),
 ('82df7427-f3ad-4702-826b-255b07d6ff9f', 'topiramate', 120.6, 'Turquoise', 'Skalith', 'Movies'),
 ('556a2b2c-050a-4c78-b8fb-0b3c1ccea2af', 'West Wheat Grass', 128.8, 'Red', 'Rhycero', 'Home'),
 ('80db28a2-fbe2-4217-a906-6d6223c01617', 'ALUMINUM CHLOROHYDRATE', 172.7, 'Turquoise', 'Eadel', 'Shoes'),
@@ -257,3 +257,19 @@ create table OrderItem (
     FOREIGN KEY (orderId) REFERENCES `Order`(orderId),
     FOREIGN KEY (itemId) REFERENCES Item(itemId)
 );
+
+drop table if exists ShopItem;
+
+create table ShopItem (
+    shopId VARCHAR(40),
+    itemId VARCHAR(40),
+    PRIMARY KEY (shopId, itemId),
+    FOREIGN KEY (shopId) REFERENCES `Shop`(shopId),
+    FOREIGN KEY (itemId) REFERENCES Item(itemId)
+);
+
+insert into ShopItem (shopId, itemId) values
+('93d773fe-4c26-46f4-a7dc-c767fbbd266e', '431c7779-4cd6-44f6-ae1c-da80a13fe633'),
+('93d773fe-4c26-46f4-a7dc-c767fbbd266e', '7d49c255-b254-4734-9298-4c38c6c475c2'),
+('93d773fe-4c26-46f4-a7dc-c767fbbd266e', 'd11a919d-bc55-4c12-bf1f-919814ca2a4d'),
+('2ef1ce37-30f3-4a33-8961-5798cb8e3351', '431c7779-4cd6-44f6-ae1c-da80a13fe633')
