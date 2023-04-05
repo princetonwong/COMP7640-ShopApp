@@ -22,13 +22,27 @@ db = Database(
 def index():
     return render_template("index.html")
 
+def __getShopQty(shops):
+    qtyData = db.execute("SELECT `shopId`, COUNT(`itemId`) FROM `ShopItem` GROUP BY `shopId`")
+    qty = {row[0]: row[1] for row in qtyData}
+    for shop in shops:
+        shop.qty = qty.get(shop.shopId, 0)
+    return shops
 
 # Shop management - Show all shops
 @app.route("/shop/all")
 def showAllShops():
     data = db.execute("SELECT * FROM `Shop`")
     shops = [Shop(*row) for row in data]
-    return render_template("showAllShops.html", shops=shops)
+
+    shops = __getShopQty(shops)
+
+    return render_template("shopsList.html",
+                           shops=shops,
+                           title="All Shops",
+                           buttonText="➕ Add a new shop",
+                           buttonLink="/shop/add"
+                           )
 
 
 # Shop management - Add a new shop to the database.
@@ -45,17 +59,37 @@ def addShop():
         return redirect("/shop/all")
     return render_template("addShop.html")
 
+# Shop Management - Show a shop with an item
+@app.route("/shop/all/<item_id>")
+def showShop(item_id):
+    itemData = db.execute(f"SELECT * FROM `Item` WHERE itemId = '{item_id}'")
+    item = Item(*itemData[0])
+    shopsData = db.execute(f"SELECT * FROM `Shop` WHERE shopId in (SELECT shopId FROM `ShopItem` WHERE itemId = '{item_id}')")
+    shops = [Shop(*row) for row in shopsData]
+
+    shops = __getShopQty(shops)
+
+    return render_template("shopsList.html",
+                           shops=shops,
+                           title=f"Shops with {item.name}",
+                           buttonText="/",
+                           buttonLink="/")
 
 # Item management - Show all items of a shop
 @app.route("/item/all/<shop_id>")
 def showAllItems(shop_id):
-    shopData = db.execute(f"SELECT * FROM `Shop` WHERE `shopId` = '{shop_id}'")
+    shopData = db.execute(f"SELECT * FROM `Shop` WHERE shopId = '{shop_id}'")
     shop = Shop(*shopData[0])
 
-    itemsData = db.execute(f"SELECT * FROM Item WHERE itemId in (SELECT itemId FROM `ShopItem` WHERE `shopId` = '{shop_id}')")
+    itemsData = db.execute(f"SELECT * FROM Item WHERE itemId in (SELECT itemId FROM `ShopItem` WHERE shopId = '{shop_id}')")
     items = [Item(*row) for row in itemsData]
 
-    return render_template("showAllItems.html", items=items, shop=shop)
+    return render_template("itemsList.html",
+                           items=items,
+                           title=f"All Items of {shop.name}",
+                           buttonText="➕ Add a new item to this shop",
+                           buttonLink=f"/item/add/{shop_id}"
+                           )
 
 
 # Item management - Add a new item to the shop
@@ -76,15 +110,20 @@ def addItem(shopId):
     shop = Shop(*shopData[0])
     return render_template("addItem.html", shop=shop)
 
-#TODO: Item search - You can search items by keywords. (A keyword --> name or keyword fully matches)
+# Item search - You can search items by keywords. (A keyword --> name or keyword fully matches)
 @app.route("/item/search", methods=["GET", "POST"])
 def searchItem():
     if request.method == "POST":
         keyword = request.form.get("keyword")
         data = db.execute(f"SELECT * FROM `Item` WHERE `name` = '{keyword}' OR `keyword1` = '{keyword}' OR `keyword2` = '{keyword}' OR `keyword3` = '{keyword}'")
         items = [Item(*row) for row in data]
-        return render_template("searchItem.html", items=items)
-    return render_template("searchItem.html")
+        return render_template("itemsList.html",
+                               items=items,
+                               title=f"Search results of {keyword}",
+                               buttonText="",
+                               buttonLink=f""
+                               )
+    return render_template("search.html")
 
 
 #TODO: Item purchase - Record in database which customer purchases which item.

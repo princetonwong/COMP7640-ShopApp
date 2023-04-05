@@ -1,29 +1,20 @@
 {%- extends "base.html" %}
 {% import "bootstrap/utils.html" as utils %}
 {% block content %}
-Links to other pages:
+{{super()}}
 
 <div class="container margin">
-    <div class="row alert alert-warning bg-dark text-white">
-        <span class="h3 mt-0"><a href="/shop">Shop</a></span>
-    </div>
-    <div class="row alert alert-warning bg-dark text-white">
+    <div class="row alert alert-warning  text-white">
         <span class="h3 mt-0"><a href="/shop/all">Show All Shops</a></span>
     </div>
-    <div class="row alert alert-warning bg-dark text-white">
-        <span class="h3 mt-0"><a href="/showAllItems">Show All Items</a></span>
+    <div class="row alert alert-warning  text-white">
+        <span class="h3 mt-0"><a href="/order/all">Show All Orders</a></span>
     </div>
-    <div class="row alert alert-warning bg-dark text-white">
-        <span class="h3 mt-0"><a href="/showAllOrders">Show All Orders</a></span>
-    </div>
-    <div class="row alert alert-warning bg-dark text-white">
+    <div class="row alert alert-warning  text-white">
         <span class="h3 mt-0"><a href="/shop/add">Add New Shop</a></span>
     </div>
-    <div class="row alert alert-warning bg-dark text-white">
-        <span class="h3 mt-0"><a href="/item/add">Add New Item</a></span>
-    </div>
-    <div class="row alert alert-warning bg-dark text-white">
-        <span class="h3 mt-0"><a href="/item/search">Search Item</a></span>
+    <div class="row alert alert-warning  text-white">
+        <span class="h3 mt-0"><a href="/item/search">Search Item by a keyword</a></span>
     </div>
 </div>
 {%- endblock %}
