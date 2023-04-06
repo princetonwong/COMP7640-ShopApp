@@ -1,0 +1,60 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% block content %}
+
+<div class="row mt-4">
+    <div class="col alert alert-primary bg-danger text-white text-center">
+        <span class="h1">Add a new order</span>
+    </div>
+</div>
+
+{{super()}}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="col alert bg-info text-white text-center alert-{{ category }} h2">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="container margin alert alert-warning bg-dark">
+    <form method="post" action="/order/add">
+        <div class="row h1">
+            <div class="col-2 text-white">CustomerId:</div>
+            <div class="col-7">
+                {% if customerId %}
+                    <input type="text" class="text-med" name="customerId" placeholder="{{customerId}}" />
+                {% else %}
+                    <input type="text" class="text-med" name="customerId" placeholder="Customer ID" />
+                {% endif %}
+            </div>
+        </div>
+<!--        <div class="row h1">-->
+<!--            <div class="col-2 text-white">Item Name:</div>-->
+<!--            <div class="col-7">-->
+<!--                <select name="itemId">-->
+<!--                    <option value="">NONE</option>-->
+<!--                    {% for item in items %}-->
+<!--                    <option value="{{item.itemId}}">{{item.name}} - ${{item.price}}</option>-->
+<!--                    {% endfor %}-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div class="col-1">-->
+<!--                <div class="text-white">Qty:</div>-->
+<!--            </div>-->
+<!--            <div class="col-2">-->
+<!--                <input type="number" class="text-med" name="quantity" placeholder="Quantity" step="1" min="1" max="100"/>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="row h1">
+            <div class="col text-white"></div>
+            <div class="col-8">
+                <button type="submit" class="h1 mt-0 float-right text-center">Submit</button>
+            </div>
+    </form>
+</div>
+{%- endblock %}

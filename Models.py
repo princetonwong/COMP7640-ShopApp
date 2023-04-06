@@ -29,8 +29,9 @@ class Customer:
 
 @dataclass
 class Order:
-    orderId: str
+    orderId: int
     customerId: str
+    status: str
 
 
 @dataclass

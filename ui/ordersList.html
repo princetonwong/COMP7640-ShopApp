@@ -1,0 +1,65 @@
+{%- extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% block content %}
+<div class="row mt-4">
+    <div class="col alert alert-primary bg-danger text-white text-center">
+        <span class="h1">{{title}} ({{orders|length}})</span>
+    </div>
+</div>
+
+{{super()}}
+
+<div class="row">
+    <div class="col col-md-3 offset-md-6">
+        <input type="button" class="h3 mt-0 float-right text-center"
+               value="{{buttonText}}" onclick="location.href='{{buttonLink}}'"/>
+    </div>
+</div>
+
+<div class="container margin">
+    <div class="row">
+    <div class="col">
+        <div class="row alert alert-warning bg-dark text-white">
+            <span class="col col-1 mt-0 h3 text-center">Order ID</span>
+            <span class="col col-4 mt-0 h3 text-left">Customer ID</span>
+            <span class="col col-1 mt-0 h3 text-left">Status</span>
+            <span class="col col-1 mt-0 h3 text-left">Related Items</span>
+            <span class="col col-5 mt-0 h3 text-left">Actions</span>
+        </div>
+        {% for order in orders %}
+        <div class="row alert alert-warning">
+            <input type="hidden" value={{ order.orderId }}>
+            <span class="col col-1 mt-0 h3 text-center">{{ order.orderId }}</span>
+            <span class="col col-4 mt-0 h3 text-left"><a href="/order/show?customerId={{order.customerId}}">{{ order.customerId }}</a></span>
+            <span class="col col-1 mt-0 h3 text-left">{{ order.status }}</span>
+            <span class="col col-1 mt-0 h3 text-left"><a href="/item/show?orderId={{ order.orderId }}">{{ order.itemsQty }}</a></span>
+            {% if order.status in ["Pending", "Paid"] %}
+            <span class="col col-1 mt-0 h3 text-left">
+                {% if customerId %}
+                    <a href="/order/cancel?orderId={{ order.orderId }}&customerId={{ customerId }}">Cancel</a>
+                {% else %}
+                    <a href="/order/cancel?orderId={{ order.orderId }}">Cancel</a>
+                {% endif %}
+            </span>
+            {% endif %}
+
+            {% if order.status in ["Pending"] %}
+            <span class="col col-2 mt-0 h3 text-left">
+                {% if customerId %}
+                    <a href="/order/markAsPaid?orderId={{ order.orderId }}&customerId={{ customerId }}">Mark as Paid</a>
+                {% else %}
+                    <a href="/order/markAsPaid?orderId={{ order.orderId }}">Mark as Paid</a>
+                {% endif %}
+            </span>
+            <span class="col col-2 mt-0 h3 text-left">
+                    <a href="/orderItem/add?orderId={{order.orderId}}">Add a new item</a>
+                </span>
+            {% endif %}
+
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+{%- endblock %}

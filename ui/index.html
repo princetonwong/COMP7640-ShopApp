@@ -1,20 +1,59 @@
 {%- extends "base.html" %}
 {% import "bootstrap/utils.html" as utils %}
 {% block content %}
+
+<div class="row mt-4">
+    <div class="col alert alert-primary bg-danger text-white text-center">
+        <span class="h1">Welcome to COMP7640 Project - SID 22465804</span>
+    </div>
+</div>
+
 {{super()}}
 
 <div class="container margin">
-    <div class="row alert alert-warning  text-white">
-        <span class="h3 mt-0"><a href="/shop/all">Show All Shops</a></span>
+    <div class="row alert alert-warning">
+        <div class="col-9">
+            <span class="h3 mt-0"><a href="/shop/show">Show All Shops</a></span>
+        </div>
+        <div class="col-3">
+            <input type="button" class="h3 mt-0 float-right text-center"
+                   value="➕ Add a new shop" onclick="location.href='/shop/add'"/>
+        </div>
     </div>
-    <div class="row alert alert-warning  text-white">
-        <span class="h3 mt-0"><a href="/order/all">Show All Orders</a></span>
+
+    <div class="row alert alert-warning">
+        <div class="col-9">
+            <span class="h3 mt-0"><a href="/order/show">Show All Orders</a></span>
+        </div>
+        <div class="col-3">
+            <input type="button" class="h3 mt-0 float-right text-center"
+                   value="➕ Add a new order" onclick="location.href='/order/add'"/>
+        </div>
     </div>
-    <div class="row alert alert-warning  text-white">
-        <span class="h3 mt-0"><a href="/shop/add">Add New Shop</a></span>
+
+    <div class="row alert alert-warning">
+        <div class="col-6">
+            <span class="h3 mt-0"><a href="/item/show">Show All Items</a></span>
+        </div>
+        <div class="col-3">
+            <input type="button" class="h3 mt-0 float-right text-center"
+                   value="❓ Search Item by a keyword" onclick="location.href='/item/search'"/>
+        </div>
+        <div class="col-3">
+            <input type="button" class="h3 mt-0 float-right text-center"
+                   value="➕ Add a new item" onclick="location.href='/item/add'"/>
+        </div>
     </div>
-    <div class="row alert alert-warning  text-white">
-        <span class="h3 mt-0"><a href="/item/search">Search Item by a keyword</a></span>
+
+    <div class="row alert alert-warning">
+        <div class="col-9">
+            <span class="h3 mt-0"><a href="/customer/show">Show All Customers</a></span>
+        </div>
+        <div class="col-3">
+            <input type="button" class="h3 mt-0 float-right text-center"
+                   value="➕ Add a new customer" onclick="location.href='/customer/add'"/>
+        </div>
     </div>
+
 </div>
 {%- endblock %}
