@@ -45,12 +45,12 @@
             <div class="col-7">
                 <select name="itemId">
                     {% if item %}
-                    <option disabled value="{{item.itemId}}">{{item.name}} - ${{item.price}}</option>
+                    <option disabled value="{{item.itemId}}">{{item.name}} - ${{item.price}} [{{item.shopName}}]</option>
                     {% endif %}
                     {% if items %}
                     <option value="">NONE</option>
                         {% for item in items %}
-                        <option value="{{item.itemId}}">{{item.name}} - ${{item.price}}</option>
+                        <option value="{{item.itemId}}">{{item.name}} - ${{item.price}} [{{item.shopName}}]</option>
                         {% endfor %}
                     {% endif %}
                 </select>

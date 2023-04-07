@@ -12,6 +12,25 @@
 
 {{super()}}
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="col alert bg-info text-white text-center alert-{{ category }} h2">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% if order %}
+<div class="row">
+    <div class="col col-md-3 offset-md-6">
+        <input type="button" class="h3 mt-0 float-right text-center"
+               value="➖ Cancel whole order" onclick="location.href='/order/cancel?orderId={{ order.orderId }}&customerId={{order.customerId}}'"/>
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col col-md-3 offset-md-6">
         <input type="button" class="h3 mt-0 float-right text-center"
@@ -25,20 +44,32 @@
     <div class="row">
     <div class="col">
         <div class="row alert alert-warning bg-dark text-white">
-            <span class="col col-4 mt-0 h3 text-center">Item Name</span>
-            <span class="col col-2 mt-0 h3 border-left border-light text-center">Price</span>
-            <span class="col col-4 mt-0 h3 border-left border-light text-center">Keywords</span>
-            <span class="col col-1 mt-0 h3 border-left border-light text-center">Related shops</span>
-            <span class="col col-1 mt-0 h3 border-left border-light text-center">Related orders</span>
+            <span class="col col-3 mt-0 h3 text-center">Item Name</span>
+            <span class="col col-1 mt-0 h3 border-left border-light text-center">Price</span>
+            <span class="col col-3 mt-0 h3 border-left border-light text-center">Keywords</span>
+            <span class="col col-2 mt-0 h3 border-left border-light text-center">Related shop</span>
+            {% if order %}
+            <span class="col col-1 mt-0 h3 border-left border-light text-center">Quantity</span>
+            {% else %}
+            <span class="col col-2 mt-0 h3 border-left border-light text-center">Related orders</span>
+            {% endif %}
         </div>
         {% for item in items %}
         <div class="row alert alert-warning">
             <input type="hidden" value={{ item.itemId }}>
-            <span class="col col-4 mt-0 h3 text-left">{{ item.name }}</span>
-            <span class="col col-2 mt-0 border-left border-dark h3 text-center">{{ item.price }}</span>
-            <span class="col col-4 mt-0 border-left border-dark h3 text-left">{{ item.keyword1 }}, {{item.keyword2}}, {{item.keyword3}}</span>
-            <span class="col col-1 mt-0 border-left border-dark h3 text-center"><a href="/shop/show?itemId={{ item.itemId }}">{{ item.shopQty}} </a></span>
-            <span class="col col-1 mt-0 border-left border-dark h3 text-center"><a href="/order/show?itemId={{ item.itemId }}">{{ item.orderQty}} </a></span>
+            <span class="col col-3 mt-0 h3 text-left">{{ item.name }}</span>
+            <span class="col col-1 mt-0 border-left border-dark h3 text-center">${{ item.price }}</span>
+            <span class="col col-3 mt-0 border-left border-dark h3 text-left">{{ item.keyword1 }}, {{item.keyword2}}, {{item.keyword3}}</span>
+            <span class="col col-2 mt-0 border-left border-dark h3 left"><a href="/item/show?shopId={{ item.shopId }}">{{ item.shopName }} </a></span>
+            {% if order %}
+            <span class="col col-1 mt-0 border-left border-dark h3 text-center">{{ item.orderItemQty}} </a></span>
+            <span class="col col-2 mt-0 h3 text-left">
+                <a href="/orderItem/cancel?orderId={{ order.orderId }}&itemId={{ item.itemId }}">Cancel item</a>
+            </span>
+            {% else %}
+            <span class="col col-2 mt-0 border-left border-dark h3 text-center"><a href="/order/show?itemId={{ item.itemId }}">{{ item.orderQty}} </a></span>
+            {% endif %}
+
         </div>
         {% endfor %}
     </div>

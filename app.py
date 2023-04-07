@@ -24,17 +24,18 @@ def index():
     return render_template("index.html")
 
 def __getItemQtyByShop(shops):
-    qtyData = db.execute("SELECT `shopId`, COUNT(`itemId`) FROM `ShopItem` GROUP BY `shopId`")
+    qtyData = db.execute("SELECT `shopId`, COUNT(`itemId`) FROM `Item` GROUP BY `shopId`")
     qty = {row[0]: row[1] for row in qtyData}
     for shop in shops:
         shop.qty = qty.get(shop.shopId, 0)
     return shops
 
-def __getShopQtyByItem(items):
-    qtyData = db.execute("SELECT `itemId`, COUNT(`shopId`) FROM `ShopItem` GROUP BY `itemId`")
-    shopQty = {row[0]: row[1] for row in qtyData}
+def __getShopNameByItem(items):
+    shopNameData = db.execute("SELECT i.`itemId`, s.name FROM `Item` i INNER JOIN `Shop` s ON i.`shopId` = s.`shopId`")
+    shopname = {row[0]: row[1] for row in shopNameData}
+    print(shopname)
     for item in items:
-        item.shopQty = shopQty.get(item.itemId, 0)
+        item.shopName = shopname.get(item.itemId, 0)
     return items
 
 def __getOrderQtyByItem(items):
@@ -43,6 +44,14 @@ def __getOrderQtyByItem(items):
     for item in items:
         item.orderQty = orderQty.get(item.itemId, 0)
     return items
+
+def __getOrderItemQtyByItem(items):
+    qtyData = db.execute("SELECT `itemId`, SUM(`quantity`) FROM `OrderItem` GROUP BY `itemId`")
+    orderItemQty = {row[0]: row[1] for row in qtyData}
+    for item in items:
+        item.orderItemQty = orderItemQty.get(item.itemId, 0)
+    return items
+
 def __getOrderQtyByCustomer(customers):
     qtyData = db.execute("SELECT `customerId`, COUNT(`orderId`) FROM `Order` GROUP BY `customerId`")
     orderQty = {row[0]: row[1] for row in qtyData}
@@ -60,28 +69,27 @@ def __getItemsQtyByOrder(orders):
 # Shop management - Show all shops
 @app.route("/shop/show")
 def shopsList():
-    itemId = request.args.get("itemId", None)
-
     # Shop Management - Show shops selling a specific item
-    if itemId:
-        itemData = db.execute(f"SELECT * FROM `Item` WHERE itemId = '{itemId}'")
-        item = Item(*itemData[0])
-        shopsData = db.execute(
-            f"SELECT * FROM `Shop` WHERE shopId in (SELECT shopId FROM `ShopItem` WHERE itemId = '{itemId}')")
-        shops = [Shop(*row) for row in shopsData]
-
-        title = f"Shops with {item.name}"
-        buttonText = "/"
-        buttonLink = "/"
+    # itemId = request.args.get("itemId", None)
+    # if itemId:
+    #     itemData = db.execute(f"SELECT * FROM `Item` WHERE itemId = '{itemId}'")
+    #     item = Item(*itemData[0])
+    #     shopsData = db.execute(
+    #         f"SELECT * FROM `Shop` WHERE shopId in (SELECT shopId FROM `ShopItem` WHERE itemId = '{itemId}')")
+    #     shops = [Shop(*row) for row in shopsData]
+    #
+    #     title = f"Shops with {item.name}"
+    #     buttonText = "/"
+    #     buttonLink = "/"
 
     # Shop management - Show all shops
-    else:
-        data = db.execute("SELECT * FROM `Shop`")
-        shops = [Shop(*row) for row in data]
+    # else:
+    data = db.execute("SELECT * FROM `Shop`")
+    shops = [Shop(*row) for row in data]
 
-        title = "All Shops"
-        buttonText = "➕ Add a new shop"
-        buttonLink = "/shop/add"
+    title = "All Shops"
+    buttonText = "➕ Add a new shop"
+    buttonLink = "/shop/add"
 
     shops = __getItemQtyByShop(shops)
 
@@ -121,12 +129,13 @@ def showAllItems():
         shop = Shop(*shopData[0])
 
         itemsData = db.execute(
-            f"SELECT * FROM Item WHERE itemId in (SELECT itemId FROM `ShopItem` WHERE shopId = '{shopId}') order by `name`")
+            f"SELECT * FROM Item WHERE shopId = '{shopId}' order by `name`")
         items = [Item(*row) for row in itemsData]
 
         title = f"All Items of {shop.name}"
         buttonText = "➕ Add a new item to this shop"
         buttonLink = f"/item/add?shopId={shop.shopId}"
+        order = None
 
     # Item management - Show all items of an order
     elif orderId:
@@ -137,9 +146,12 @@ def showAllItems():
             f"SELECT * FROM Item WHERE itemId in (SELECT itemId FROM `OrderItem` WHERE orderId = '{orderId}') order by `name`")
         items = [Item(*row) for row in itemsData]
 
+        items = __getOrderItemQtyByItem(items)
+
         title = f"All Items of Order {order.orderId} from {order.customerId}"
         buttonText = "➕ Add a new item to this order"
         buttonLink = f"/orderItem/add?orderId={order.orderId}"
+
 
     # Item management - Show all items in database
     else:
@@ -149,15 +161,18 @@ def showAllItems():
         title = f"All Items"
         buttonText = "➕ Add a new item to database"
         buttonLink = f"/item/add"
+        order = None
 
-    items = __getShopQtyByItem(items)
+
+    items = __getShopNameByItem(items)
     items = __getOrderQtyByItem(items)
 
     return render_template("itemsList.html",
                            items=items,
-                            title=title,
-                            buttonText=buttonText,
-                            buttonLink=buttonLink
+                           title=title,
+                           buttonText=buttonText,
+                           buttonLink=buttonLink,
+                           order=order
                            )
 
 
@@ -172,13 +187,13 @@ def addItem():
         keyword2 = request.form.get("keyword2")
         keyword3 = request.form.get("keyword3")
         itemId = uuid4()
-        db.execute(f"INSERT INTO `Item` (itemId, name, price, keyword1, keyword2, keyword3) VALUES('{itemId}', '{itemName}', {price}, '{keyword1}', '{keyword2}','{keyword3}');")
-        db.execute(f"INSERT INTO `ShopItem` (shopId, itemId) VALUES ('{shopId}', '{itemId}');")
+        db.execute(f"INSERT INTO `Item` (itemId, shopId, name, price, keyword1, keyword2, keyword3) VALUES('{itemId}', '{shopId}', '{itemName}', {price}, '{keyword1}', '{keyword2}','{keyword3}');")
         return redirect(f"/item/show?shopId={shopId}")
 
     shopData = db.execute(f"SELECT * FROM `Shop` WHERE `shopId` = '{shopId}'")
     shop = Shop(*shopData[0])
     return render_template("addItem.html", shop=shop)
+
 
 # Item search - You can search items by keywords. (A keyword --> name or keyword fully matches)
 @app.route("/item/search", methods=["GET", "POST"])
@@ -188,7 +203,7 @@ def searchItem():
         data = db.execute(f"SELECT * FROM `Item` WHERE `name` = '{keyword}' OR `keyword1` = '{keyword}' OR `keyword2` = '{keyword}' OR `keyword3` = '{keyword}'")
         items = [Item(*row) for row in data]
 
-        items = __getShopQtyByItem(items)
+        items = __getShopNameByItem(items)
         items = __getOrderQtyByItem(items)
 
         return render_template("itemsList.html",
@@ -262,8 +277,9 @@ def addOrderItem():
         print(orderId)
         orderData = db.execute(f"SELECT * FROM `Order` WHERE `orderId` = '{orderId}'")
         order = Order(*orderData[0])
-        itemsData = db.execute(f"SELECT * FROM `Item`")
+        itemsData = db.execute(f"SELECT * FROM `Item` order by `name`")
         items = [Item(*row) for row in itemsData]
+        items = __getShopNameByItem(items)
         return render_template("addOrderItem.html", order=order, items=items, customerId=order.customerId)
 
     elif itemId:
@@ -273,18 +289,28 @@ def addOrderItem():
 
     return render_template("addOrderItem.html")
 
-#TODO: Item purchase - Record in database which customer purchases which item.
-@app.route("/item/purchase", methods=["GET", "POST"])
-def purchaseItem():
-    if request.method == "POST":
-        customerId = request.form.get("customerId")
-        itemId = request.form.get("itemId")
-        quantity = int(request.form.get("quantity"))
-        orderId = uuid4()
-        db.execute(f"INSERT INTO `Order` (orderId, customerId) VALUES ('{orderId}', '{customerId}');")
-        db.execute(f"INSERT INTO `OrderItem` (orderId, itemId, quantity) VALUES ('{orderId}', '{itemId}', {quantity});")
-        return redirect("/item/show")
-    return render_template("purchaseItem.html")
+
+@app.route("/orderItem/cancel", methods=["GET"])
+def cancelOrderItem():
+    orderId = request.args.get("orderId")
+    itemId = request.args.get("itemId")
+
+    db.execute(f"DELETE FROM `OrderItem` WHERE `orderId` = '{orderId}' AND `itemId` = '{itemId}';")
+    flash(f"Item successfully removed", "error")
+    return redirect(f"/item/show?orderId={orderId}")
+
+# Item purchase - Record in database which customer purchases which item.
+# @app.route("/item/purchase", methods=["GET", "POST"])
+# def purchaseItem():
+#     if request.method == "POST":
+#         customerId = request.form.get("customerId")
+#         itemId = request.form.get("itemId")
+#         quantity = int(request.form.get("quantity"))
+#         orderId = uuid4()
+#         db.execute(f"INSERT INTO `Order` (orderId, customerId) VALUES ('{orderId}', '{customerId}');")
+#         db.execute(f"INSERT INTO `OrderItem` (orderId, itemId, quantity) VALUES ('{orderId}', '{itemId}', {quantity});")
+#         return redirect("/item/show")
+#     return render_template("purchaseItem.html")
 
 
 @app.route("/order/show")
