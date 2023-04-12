@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash
 from flask_bootstrap import Bootstrap
-from Models import Customer, Order, OrderItem, Item, Shop
+from Models import Customer, Order, Item, Shop
 from Logging import defaultLogging
 from Database import Database
 from uuid import uuid4
