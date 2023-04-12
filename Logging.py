@@ -1,6 +1,6 @@
 import logging
 
-
+# Set up logging
 def defaultLogging():
     logger = logging.getLogger("")
     format = '%(asctime)s [%(levelname)s] %(message)s'

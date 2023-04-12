@@ -8,6 +8,9 @@
         <span class="h1">{{title}} ({{items|length}})</span>
     </div>
 </div>
+<div class="col alert bg-info text-white text-center alert-{{ category }} h2">
+        <span class="h2">Cancel the last item in the order will also cancel the whole order.</span>
+</div>
 
 
 {{super()}}
@@ -22,11 +25,12 @@
   {% endif %}
 {% endwith %}
 
+{% if items|length > 0 and order.status != "Cancelled" %}
 {% if order %}
 <div class="row">
     <div class="col col-md-3 offset-md-6">
         <input type="button" class="h3 mt-0 float-right text-center"
-               value="➖ Cancel whole order" onclick="location.href='/order/cancel?orderId={{ order.orderId }}&customerId={{order.customerId}}'"/>
+               value="➖ Cancel entire order" onclick="location.href='/order/cancel?orderId={{ order.orderId }}&customerId={{order.customerId}}'"/>
     </div>
 </div>
 {% endif %}
@@ -37,6 +41,7 @@
                value="{{buttonText}}" onclick="location.href='{{buttonLink}}'"/>
     </div>
 </div>
+{% endif %}
 
 
 

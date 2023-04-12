@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 
+# Dataclass is a decorator that allows you to define a class with a constructor
+# and other methods that are automatically generated for you.
+# It is a way to define a class that is more concise and readable than the
+# traditional way of defining a class.
 
+# Specify all the attributes of the class and their types.
 @dataclass
 class Shop:
     shopId: str

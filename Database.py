@@ -1,7 +1,7 @@
 import pymysql
 
-class Database:
 
+class Database:
     def __init__(self, host, port, user, password, database):
         self.host = host
         self.port = port
@@ -19,6 +19,7 @@ class Database:
         self.cursor = self.db.cursor()
         self.db.autocommit(value=True)
 
+    # Shortcut for execute
     def execute(self, query):
         try:
             print(f"{query=}")
@@ -31,3 +32,27 @@ class Database:
             print(e.args)
             print(e.args[0], e.args[1])
             return None
+
+    # Initiate mock data from group57_insert_sql.txt
+    def initiateMockData(self):
+        with open("group57_insert_sql.txt", "r") as f:
+            content = f.read()
+            # self.execute(content)
+            sqlCommands = content.split(';')
+            for command in sqlCommands:
+                try:
+                    self.execute(command)
+                except Exception as msg:
+                    print("Command skipped: ", msg)
+        print("Mock data initiated")
+
+
+if __name__ == "__main__":
+    db = Database(
+        user="root",
+        password="my-secret-pw",
+        host="139.59.124.127",
+        port=3306,
+        database="SHOPAPP"
+    )
+    db.initiateMockData()

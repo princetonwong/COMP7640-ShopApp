@@ -21,34 +21,41 @@
 {% endwith %}
 
 <div class="container margin alert alert-warning bg-dark">
-    <form method="post" action="/order/add">
+    <form name="addOrder" method="post" action="/order/add" onsubmit="validateForm()">
         <div class="row h1">
             <div class="col-2 text-white">CustomerId:</div>
             <div class="col-7">
                 {% if customerId %}
                     <input type="text" class="text-med" name="customerId" placeholder="{{customerId}}" />
                 {% else %}
-                    <input type="text" class="text-med" name="customerId" placeholder="Customer ID" />
+                    {% if customers %}
+                    <select required name="customerId">
+                    <option value="">NONE</option>
+                        {% for customer in customers %}
+                        <option value="{{customer.customerId}}">{{customer.name}} - {{customer.phone}}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
-<!--        <div class="row h1">-->
-<!--            <div class="col-2 text-white">Item Name:</div>-->
-<!--            <div class="col-7">-->
-<!--                <select name="itemId">-->
-<!--                    <option value="">NONE</option>-->
-<!--                    {% for item in items %}-->
-<!--                    <option value="{{item.itemId}}">{{item.name}} - ${{item.price}}</option>-->
-<!--                    {% endfor %}-->
-<!--                </select>-->
-<!--            </div>-->
-<!--            <div class="col-1">-->
-<!--                <div class="text-white">Qty:</div>-->
-<!--            </div>-->
-<!--            <div class="col-2">-->
-<!--                <input type="number" class="text-med" name="quantity" placeholder="Quantity" step="1" min="1" max="100"/>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="row h1">
+            <div class="col-2 text-white">Item Name:</div>
+            <div class="col-7">
+                <select required name="itemId">
+                    <option value="">NONE</option>
+                    {% for item in items %}
+                    <option value="{{item.itemId}}">{{item.name}} - ${{item.price}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-1">
+                <div class="text-white">Qty:</div>
+            </div>
+            <div class="col-2">
+                <input required type="number" class="text-med" name="quantity" step="1" min="1" max="100"/>
+            </div>
+        </div>
 
         <div class="row h1">
             <div class="col text-white"></div>
@@ -56,5 +63,29 @@
                 <button type="submit" class="h1 mt-0 float-right text-center">Submit</button>
             </div>
     </form>
+    <p class="errorMessage top-arrow hidden"> </p>
 </div>
 {%- endblock %}
+
+<!--{% block scripts %}-->
+<!--{{super()}}-->
+<!--<script>-->
+<!--    function validateForm() {-->
+<!--        var itemId = document.forms["addOrder"]["itemId"].value;-->
+<!--        if (!itemId) {-->
+<!--            document.getElementsByClassName("errorMessage")[0].style.visibility = "visible";-->
+<!--            document.getElementsByClassName("errorMessage")[0].innerHTML = "Please Fill out this field";-->
+<!--            return false;-->
+<!--        }-->
+<!--        var customerId = document.forms["addOrder"]["customerId"].value;-->
+<!--        if (!customerId) {-->
+<!--            document.getElementsByClassName("errorMessage")[0].style.visibility = "visible";-->
+<!--            document.getElementsByClassName("errorMessage")[0].innerHTML = "Please Fill out this field";-->
+<!--            return false;-->
+<!--        }-->
+<!--        return true;-->
+<!--    }-->
+<!--</script>-->
+<!--{% endblock scripts%}-->
+
+

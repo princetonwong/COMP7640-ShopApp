@@ -61,7 +61,7 @@ values
 ('7ea736cc-0462-49d4-a066-2a858975b873', 'Larkin, Dare and Spinka', 2.0, '4745 Westend Pass'),
 ('a8a6600e-3ed8-4b4a-a30a-12afed3f3e16', 'Boyer-Purdy', 4.5, '03131 Lien Lane'),
 ('035d2317-fdfb-4995-8a3c-841cffa0d755', 'Lesch-Hodkiewicz', 2.8, '5103 Birchwood Junction'),
-('830106f2-da49-4cf7-8d6a-90858f30a3e5', 'Satterfield, Waters and Swaniawski', 1.3, '83 Dahle Alley')
+('830106f2-da49-4cf7-8d6a-90858f30a3e5', 'Satterfield, Waters and Swaniawski', 1.3, '83 Dahle Alley');
 
 drop table if exists Item;
 
@@ -74,7 +74,7 @@ create table if not exists Item(
 	keyword2 VARCHAR(50),
 	keyword3 VARCHAR(50),
 	primary key (itemId),
-	foreign key (shopId) references Shop(shopId)
+	foreign key (shopId) references Shop(shopId) on delete cascade
 );
 
 insert into Item (itemId, shopId, name, price, keyword1, keyword2, keyword3)
@@ -178,7 +178,7 @@ values
 ('dc288619-9117-41c3-9918-4e4012488e83', '035d2317-fdfb-4995-8a3c-841cffa0d755', 'INTERLEUKIN-9', 164.4, 'Violet', 'Eabox', 'Toys'),
 ('9261f6dd-1da2-4f3f-a1f7-7338e2336490', '0ee5a8d7-60d1-4808-b807-9f101a1e25ad', 'Lamivudine and Zidovudine', 61.1, 'Puce', 'Riffpedia', 'Automotive'),
 ('0981e1f8-f355-44f9-8f39-7f3fd38441f7', '22a306a5-de89-4444-87f6-3783e5c75da9', 'ALUMINUM ZIRCONIUM TETRACHLOROHYDREX GLY', 30.0, 'Pink', 'Mynte', 'Baby'),
-('7403254f-cf7d-49f0-b420-582820d55e32', '0ee5a8d7-60d1-4808-b807-9f101a1e25ad', 'triclosan', 101.7, 'Turquoise', 'Blognation', 'Sports')
+('7403254f-cf7d-49f0-b420-582820d55e32', '0ee5a8d7-60d1-4808-b807-9f101a1e25ad', 'triclosan', 101.7, 'Turquoise', 'Blognation', 'Sports');
 
 
 
@@ -241,7 +241,7 @@ values
 ('cpeterken1a@symantec.com', 'Cinderella Peterken', '(287) 1923619', '826 Dapin Pass'),
 ('cmclukie1b@salon.com', 'Clarke McLukie', '(315) 7924147', '261 Cordelia Terrace'),
 ('vremon1c@mail.ru', 'Vonny Remon', '(363) 4197326', '9 Schurz Junction'),
-('emanach1d@booking.com', 'Evangelina Manach', '(173) 7592909', '1189 Morrow Plaza')
+('emanach1d@booking.com', 'Evangelina Manach', '(173) 7592909', '1189 Morrow Plaza');
 
 drop table if exists `Order`;
 
@@ -257,7 +257,7 @@ insert into `Order` (orderId, customerId, `status`) values
 (1, 'emanach1d@booking.com', 'Paid'),
 (2, 'vremon1c@mail.ru', 'Pending'),
 (3, 'omorillas18@youtube.com', 'Paid'),
-(4, 'emanach1d@booking.com', 'Cancelled')
+(4, 'emanach1d@booking.com', 'Cancelled');
 
 
 drop table if exists OrderItem;
@@ -283,4 +283,4 @@ insert into OrderItem (orderId, itemId, quantity) values
 (3, '5a5c8869-08cd-488a-b86f-d365dcabda23', 6),
 (4, '7403254f-cf7d-49f0-b420-582820d55e32', 3),
 (4, '8cb77e87-42d5-4558-b252-8cff75e79023', 3),
-(4, 'c7f42fd4-8934-4dbe-9eba-d0856bf2836e', 2)
+(4, 'c7f42fd4-8934-4dbe-9eba-d0856bf2836e', 2);

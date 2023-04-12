@@ -21,7 +21,7 @@
 {% endwith %}
 
 <div class="container margin alert alert-warning bg-dark">
-    <form method="post" action="/orderItem/add">
+    <form name="addOrderItem" method="post" action="/orderItem/add">
         {% if order %}
         <div class="row h1">
             <div class="col-2 text-white">OrderId:</div>
@@ -35,8 +35,6 @@
             <div class="col-7">
                 {% if customerId %}
                     <input readonly type="text" class="text-med" name="customerId" value="{{customerId}}" />
-                {% else %}
-                    <input type="text" class="text-med" name="customerId" placeholder="Customer ID" />
                 {% endif %}
             </div>
         </div>
