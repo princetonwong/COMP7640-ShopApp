@@ -1,3 +1,5 @@
+This code is tested and run on python 3.8.
+
 In terminal, go to code directory, run: \
 `$ pip install -r requirements.txt` \
 `$ python ./app.py`
